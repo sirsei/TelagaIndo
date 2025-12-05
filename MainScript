@@ -5,7 +5,7 @@ local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 local RS = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local Remote = RS:WaitForChild("FishingSystem"):WaitForChild("FishGiver")
+local Remote = RS:WaitForChild("Elmigattomiaw"):WaitForChild("KasihAksesNi")
 
 local FishList = {
 	{"Amba Fish","Common"},{"Blue Fish","Common"},
