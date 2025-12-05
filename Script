@@ -1,4 +1,4 @@
-# TelagaIndoSpamFishing
+--TelagaIndoSpamFishing
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local RS = game:GetService("ReplicatedStorage")
