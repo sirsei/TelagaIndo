@@ -1,0 +1,141 @@
+--TelagaIndoSpamFishing
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+local RS = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local Remote = RS:WaitForChild("FishingSystem"):WaitForChild("FishGiver")
+
+local FishList = {
+	{"Amba Fish","Common"},{"Blue Fish","Common"},
+	{"Adult Purple Manfish","Uncommon"},{"Christmas Fish","Uncommon"},{"Pinky Fish","Uncommon"},
+	{"Baby Purple Manfish","Uncommon"},{"Betok Hideung","Uncommon"},{"KadoKu","Uncommon"},
+	{"Betok Hideung Badig","Rare"},{"Betok Hideung Sagede Badig","Rare"},{"Big Purple Manfish","Rare"},
+	{"Fairy Ax","Rare"},{"Giant Purple Manfish","Rare"},{"Goshiki Koi","Rare"},
+	{"Kikusui Koi","Rare"},{"Purple Manfish","Rare"},{"Tancho Koi","Rare"},
+	{"Adult Frost Turtle","Epic"},{"Adult Teravolt Turtle","Epic"},{"Baby Frost Turtle","Epic"},
+	{"404Ax","Legendary"},{"Glitched Ax","Legendary"},{"MedShockspine","Legendary"},
+	{"Mini Abysal Shark","Legendary"},{"Mini Electropurp","Legendary"},
+	{"Mini King Fish","Legendary"},{"Mini Viridion","Legendary"},
+	{"Giant Frost Turtle","Mythical"},{"Giant Teravolt Turtle","Mythical"},{"Lightning Ax","Mythical"},
+	{"Madcrab","Mythical"},{"Mini Scorchsea","Mythical"},{"Mini Zephy","Mythical"},
+	{"Rainy Ax","Mythical"},{"Wiwiwi","Mythical"},
+	{"Abysal Shark","Secret"},{"Ambalodon","Secret"},{"BigShockspine","Secret"},
+	{"King Fish","Secret"},{"Madking crab","Secret"},{"MedScorchsea","Secret"},
+	{"Titan kraken","Secret"},{"Viridion Catfish","Secret"},{"Zephyros","Secret"},
+	{"Kaijura","Urban"},{"Abysal Leviathan","Urban"},{"Cyrosnap","Urban"},
+	{"Scary Ambalodon","Urban"},{"Scorchsea","Urban"},{"KadoKu","Urban"},
+	{"Leviathan Mutated A","Mutation"},{"Leviathan Mutated B","Mutation"},
+	{"Leviathan Mutated C","Mutation"},{"Leviathan Mutated D","Mutation"},
+	{"Kaijura Mutated A","Mutation"},{"Kaijura Mutated B","Mutation"},
+	{"Kaijura Mutated C","Mutation"},{"Kaijura Mutated D","Mutation"},
+	{"Sea Dragon","Mutation"}
+}
+
+local FishNames = {}
+for _,v in ipairs(FishList) do
+	table.insert(FishNames, v[1].." ["..v[2].."]")
+end
+
+local selectedFish = FishList[1]
+local running = false
+local customWeight = 50
+local delayTime = 1
+
+local Window = Rayfield:CreateWindow({
+	Name = "R.I.P 600K",
+	LoadingTitle = "Wait Yaa Sabar Kimak!",
+	LoadingSubtitle = "Made by -Sei-",
+	ConfigurationSaving = {
+		Enabled = true,
+		FolderName = "AutoFishing",
+		FileName = "FishingConfig"
+	}
+})
+
+local Tab = Window:CreateTab("Fishing", 4483362458)
+local Section = Tab:CreateSection("Main")
+
+local Dropdown = Tab:CreateDropdown({
+	Name = "Select Fish",
+	Options = FishNames,
+	CurrentOption = FishNames[1],
+	Flag = "FishSelect",
+	Callback = function(Value)
+		for _,v in ipairs(FishList) do
+			if Value == v[1].." ["..v[2].."]" then
+				selectedFish = v
+				break
+			end
+		end
+	end,
+})
+
+local WeightInput = Tab:CreateInput({
+	Name = "Custom Weight",
+	PlaceholderText = "Example: 50",
+	RemoveTextAfterFocusLost = false,
+	Callback = function(Text)
+		local num = tonumber(Text)
+		if num then
+			customWeight = num
+		end
+	end,
+})
+
+local DelaySlider = Tab:CreateSlider({
+	Name = "Fishing Delay (Seconds)",
+	Range = {0.5, 10},
+	Increment = 0.5,
+	Suffix = "s",
+	CurrentValue = 1,
+	Flag = "Delay",
+	Callback = function(Value)
+		delayTime = Value
+	end,
+})
+
+Tab:CreateButton({
+	Name = "START AUTO FISH",
+	Callback = function()
+		if selectedFish then
+			running = true
+			Rayfield:Notify({
+				Title = "Auto Fishing",
+				Content = "STARTED",
+				Duration = 2
+			})
+		end
+	end,
+})
+
+Tab:CreateButton({
+	Name = "STOP AUTO FISH",
+	Callback = function()
+		running = false
+		Rayfield:Notify({
+			Title = "Auto Fishing",
+			Content = "STOPPED",
+			Duration = 2
+		})
+	end,
+})
+
+task.spawn(function()
+	while task.wait(delayTime) do
+		if running and selectedFish then
+			local args = {
+				{
+					hookPosition = Vector3.new(67.94, -49.16, -117.65),
+					name = selectedFish[1],
+					rarity = selectedFish[2],
+					weight = customWeight
+				}
+			}
+
+			pcall(function()
+				Remote:FireServer(unpack(args))
+			end)
+		end
+	end
+end)
