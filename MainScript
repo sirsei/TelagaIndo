@@ -1,4 +1,5 @@
---TelagaIndoSpamFishing
+--TelagaIndoSpamFish
+
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local RS = game:GetService("ReplicatedStorage")
@@ -54,24 +55,36 @@ local Window = Rayfield:CreateWindow({
 })
 
 local Tab = Window:CreateTab("Fishing", 4483362458)
-local Section = Tab:CreateSection("Main")
 
-local Dropdown = Tab:CreateDropdown({
+Tab:CreateDropdown({
 	Name = "Select Fish",
 	Options = FishNames,
 	CurrentOption = FishNames[1],
 	Flag = "FishSelect",
 	Callback = function(Value)
+		local chosen
+
+		if typeof(Value) == "table" then
+			chosen = Value[1]
+		else
+			chosen = Value
+		end
+
 		for _,v in ipairs(FishList) do
-			if Value == v[1].." ["..v[2].."]" then
+			if chosen == v[1].." ["..v[2].."]" then
 				selectedFish = v
+				Rayfield:Notify({
+					Title = "Fish Selected",
+					Content = v[1].." ["..v[2].."]",
+					Duration = 2
+				})
 				break
 			end
 		end
 	end,
 })
 
-local WeightInput = Tab:CreateInput({
+Tab:CreateInput({
 	Name = "Custom Weight",
 	PlaceholderText = "Example: 50",
 	RemoveTextAfterFocusLost = false,
@@ -83,13 +96,12 @@ local WeightInput = Tab:CreateInput({
 	end,
 })
 
-local DelaySlider = Tab:CreateSlider({
+Tab:CreateSlider({
 	Name = "Fishing Delay (Seconds)",
 	Range = {0.5, 10},
 	Increment = 0.5,
 	Suffix = "s",
 	CurrentValue = 1,
-	Flag = "Delay",
 	Callback = function(Value)
 		delayTime = Value
 	end,
@@ -122,8 +134,10 @@ Tab:CreateButton({
 })
 
 task.spawn(function()
-	while task.wait(delayTime) do
+	while task.wait() do
 		if running and selectedFish then
+			task.wait(delayTime)
+
 			local args = {
 				{
 					hookPosition = Vector3.new(67.94, -49.16, -117.65),
